@@ -3,29 +3,64 @@
 # Common functions for Claude Helper Scripts
 # Source this file in other scripts: source "$(dirname "${BASH_SOURCE[0]}")/common-functions.sh"
 
+# Get the directory where this script is located
+COMMON_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Colors for output
 export GREEN='\033[0;32m'
 export YELLOW='\033[1;33m'
 export RED='\033[0;31m'
+export BLUE='\033[0;34m'
 export NC='\033[0m' # No Color
+
+# Load i18n system if available
+if [[ -f "$COMMON_SCRIPT_DIR/i18n.sh" ]]; then
+    source "$COMMON_SCRIPT_DIR/i18n.sh"
+fi
 
 # Error handling
 set -euo pipefail
 
 # Function to display errors and exit
+# Usage: error_exit "message" [exit_code]
+#    or: error_exit "MSG_KEY" [exit_code] (if MSG_KEY exists in MESSAGES)
 error_exit() {
-    echo -e "${RED}ERROR: $1${NC}" >&2
-    exit "${2:-1}"
+    local message="$1"
+    local exit_code="${2:-1}"
+
+    # Check if it's a message key
+    if [[ -n "${MESSAGES[$message]:-}" ]]; then
+        message="${MESSAGES[$message]}"
+    fi
+
+    echo -e "${RED}ERROR: $message${NC}" >&2
+    exit "$exit_code"
 }
 
 # Function to display warnings
+# Usage: warn "message" or warn "MSG_KEY"
 warn() {
-    echo -e "${YELLOW}WARNING: $1${NC}" >&2
+    local message="$1"
+
+    # Check if it's a message key
+    if [[ -n "${MESSAGES[$message]:-}" ]]; then
+        message="${MESSAGES[$message]}"
+    fi
+
+    echo -e "${YELLOW}WARNING: $message${NC}" >&2
 }
 
 # Function to display success messages
+# Usage: success "message" or success "MSG_KEY"
 success() {
-    echo -e "${GREEN}✓ $1${NC}"
+    local message="$1"
+
+    # Check if it's a message key
+    if [[ -n "${MESSAGES[$message]:-}" ]]; then
+        message="${MESSAGES[$message]}"
+    fi
+
+    echo -e "${GREEN}✓ $message${NC}"
 }
 
 # Function to check if a command exists

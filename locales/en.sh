@@ -1,0 +1,606 @@
+#!/bin/bash
+
+# English locale for Claude Helper Scripts
+# This file contains all user-facing messages
+
+declare -gA MESSAGES
+
+# =============================================================================
+# COMMON MESSAGES
+# =============================================================================
+
+# Status messages
+MESSAGES[STATUS_SUCCESS]="Success"
+MESSAGES[STATUS_ERROR]="Error"
+MESSAGES[STATUS_WARNING]="Warning"
+MESSAGES[STATUS_INFO]="Info"
+MESSAGES[STATUS_CHECKING]="Checking"
+MESSAGES[STATUS_INSTALLING]="Installing"
+MESSAGES[STATUS_COMPLETE]="Complete"
+MESSAGES[STATUS_FAILED]="Failed"
+MESSAGES[STATUS_SKIPPED]="Skipped"
+MESSAGES[STATUS_FOUND]="Found"
+MESSAGES[STATUS_NOT_FOUND]="Not found"
+
+# Common errors
+MESSAGES[ERR_REQUIRED_TOOL]="%s is required for %s"
+MESSAGES[ERR_INSTALL_WITH]="Install with: %s"
+MESSAGES[ERR_NOT_IN_GIT_REPO]="Not in a git repository"
+MESSAGES[ERR_FILE_NOT_FOUND]="File not found: %s"
+MESSAGES[ERR_FILE_NOT_READABLE]="File not readable: %s"
+MESSAGES[ERR_DIR_CREATE_FAILED]="Failed to create directory: %s"
+MESSAGES[ERR_COMMAND_FAILED]="Command failed: %s"
+MESSAGES[ERR_MISSING_ARGUMENT]="Missing required argument"
+MESSAGES[ERR_INVALID_OPTION]="Invalid option: %s"
+MESSAGES[ERR_UNKNOWN_COMMAND]="Unknown command: %s"
+MESSAGES[ERR_NO_PACKAGE_JSON]="No package.json found in current directory"
+MESSAGES[ERR_NO_CHANGES]="No changes to commit"
+MESSAGES[ERR_PATTERN_REQUIRED]="Pattern required"
+MESSAGES[ERR_NON_INTERACTIVE]="Cannot run in non-interactive mode"
+
+# Common warnings
+MESSAGES[WARN_MISSING_DEPS]="Missing optional dependencies: %s"
+MESSAGES[WARN_FEATURES_LIMITED]="Some features may not work. Install with your package manager."
+MESSAGES[WARN_TOOL_NOT_FOUND]="Optional tool '%s' not found."
+
+# Common success messages
+MESSAGES[SUCCESS_INSTALLED]="Installed successfully"
+MESSAGES[SUCCESS_COMPLETED]="Completed successfully"
+MESSAGES[SUCCESS_CLEANED]="Cleaned successfully"
+
+# Usage patterns
+MESSAGES[USAGE]="Usage: %s"
+MESSAGES[USAGE_WITH_ARGS]="Usage: %s %s"
+MESSAGES[RUN_HELP]="Run '%s help' for usage"
+
+# Interactive prompts
+MESSAGES[PROMPT_CONFIRM]="Are you sure? [y/N]"
+MESSAGES[PROMPT_SELECT]="Select an option:"
+MESSAGES[PROMPT_ENTER_NUMBER]="Enter number (1-%s):"
+MESSAGES[PROMPT_ENTER_VALUE]="Enter value:"
+MESSAGES[PROMPT_CONTINUE]="Press Enter to continue..."
+MESSAGES[PROMPT_INSTALL_NOW]="Would you like to install it now? (y/N)"
+
+# Notes
+MESSAGES[NOTE_NON_INTERACTIVE]="Note: Interactive mode disabled (non-TTY environment)"
+MESSAGES[NOTE_USE_INSTEAD]="Use: %s instead"
+MESSAGES[NOTE_INSTALL_FOR]="Install %s for enhanced features"
+
+# =============================================================================
+# SETUP.SH MESSAGES
+# =============================================================================
+
+MESSAGES[SETUP_TITLE]="Claude Helpers Setup"
+MESSAGES[SETUP_USAGE]="Usage: ./setup.sh [options]"
+MESSAGES[SETUP_OPTIONS]="Options:"
+MESSAGES[SETUP_OPT_YES]="  --yes, -y     Auto-confirm all prompts (install everything)"
+MESSAGES[SETUP_OPT_HELP]="  --help, -h    Show this help message"
+MESSAGES[SETUP_INTERACTIVE]="Just run ./setup.sh without options for interactive setup!"
+
+MESSAGES[SETUP_SYSTEM]="System:"
+MESSAGES[SETUP_PKG_MANAGER]="Package Manager:"
+MESSAGES[SETUP_PKG_NOT_FOUND]="Not found"
+
+MESSAGES[SETUP_DOWNLOADING]="Downloading claude-helpers..."
+MESSAGES[SETUP_DOWNLOADED]="Downloaded successfully"
+MESSAGES[SETUP_DOWNLOAD_FAILED]="Failed to download claude-helpers"
+MESSAGES[SETUP_CHECK_CONNECTION]="Please check your internet connection and try again."
+
+MESSAGES[SETUP_HOMEBREW_NOT_INSTALLED]="Homebrew is not installed on your Mac."
+MESSAGES[SETUP_HOMEBREW_RECOMMENDED]="Homebrew is recommended for installing optional tools."
+MESSAGES[SETUP_INSTALL_HOMEBREW]="Would you like to install Homebrew now? [Y/n]"
+MESSAGES[SETUP_INSTALLING_HOMEBREW]="Installing Homebrew..."
+MESSAGES[SETUP_HOMEBREW_INSTALLED]="Homebrew installed successfully"
+MESSAGES[SETUP_HOMEBREW_FAILED]="Failed to install Homebrew"
+MESSAGES[SETUP_CONTINUING_WITHOUT]="Continuing without package manager..."
+
+MESSAGES[SETUP_NEED_ADMIN]="Some tools require administrator access to install."
+MESSAGES[SETUP_PASSWORD_PROMPT]="You may be prompted for your password."
+MESSAGES[SETUP_NO_ADMIN]="Cannot get administrator access"
+MESSAGES[SETUP_SKIP_SYSTEM_PKGS]="Continuing without installing system packages..."
+
+MESSAGES[SETUP_INSTALLING_SCRIPTS]="Installing core scripts..."
+MESSAGES[SETUP_SCRIPTS_INSTALLED]="Scripts installed to %s"
+MESSAGES[SETUP_SCRIPTS_FAILED]="Failed to copy scripts"
+MESSAGES[SETUP_COMMANDS_INSTALLED]="Commands installed to %s"
+MESSAGES[SETUP_COMMANDS_FAILED]="Failed to copy commands"
+MESSAGES[SETUP_DIR_ERROR]="Error: CLAUDE_HELPERS_DIR is not set or doesn't exist"
+MESSAGES[SETUP_SCRIPT_DIR_ERROR]="Error: Could not determine script directory"
+MESSAGES[SETUP_RUN_DIRECTLY]="Please run this script directly, not through a pipe or source command."
+
+MESSAGES[SETUP_SHELL_ALIASES]="Setting up shell aliases..."
+MESSAGES[SETUP_OLD_CONFIG_FOUND]="Found old claude-helpers configuration"
+MESSAGES[SETUP_CLEANING_OLD]="Cleaning up previous installation..."
+MESSAGES[SETUP_CLEANED_OLD]="Cleaned up old entries"
+MESSAGES[SETUP_ALREADY_CONFIGURED]="Claude helpers already configured"
+MESSAGES[SETUP_UPDATING]="Updating to latest version..."
+MESSAGES[SETUP_REMOVED_OLD]="Removed old configuration"
+MESSAGES[SETUP_ALIASES_ADDED]="Added aliases to %s"
+MESSAGES[SETUP_TEMPLATE_CREATED]="Created template at %s"
+
+MESSAGES[SETUP_GLOBAL_CLAUDE_MD]="Setting up global CLAUDE.md..."
+MESSAGES[SETUP_CLAUDE_MD_CREATED]="Created global CLAUDE.md at %s"
+MESSAGES[SETUP_CLAUDE_MD_UPDATING]="Updating existing CLAUDE.md..."
+MESSAGES[SETUP_BACKUP_CREATED]="Created backup at %s"
+MESSAGES[SETUP_SECTIONS_UPDATED]="Updated sections in global CLAUDE.md"
+MESSAGES[SETUP_BACKUP_SAVED]="Backup saved at: %s"
+MESSAGES[SETUP_CLEANING_BACKUPS]="Cleaning up old backups (keeping 5 most recent)..."
+MESSAGES[SETUP_UPDATE_FAILED]="Failed to update CLAUDE.md"
+MESSAGES[SETUP_ORIGINAL_PRESERVED]="Original file preserved. Backup available at: %s"
+
+MESSAGES[SETUP_MCP_TITLE]="MCP Server Setup"
+MESSAGES[SETUP_MCP_CLI_NOT_FOUND]="Claude Code CLI not found"
+MESSAGES[SETUP_MCP_INSTALL_HINT]="Install Claude Code to use MCP servers: https://docs.anthropic.com/claude-code"
+MESSAGES[SETUP_MCP_CHECKING]="Checking existing MCP servers..."
+MESSAGES[SETUP_MCP_ALREADY_CONFIGURED]="already configured"
+MESSAGES[SETUP_MCP_ALL_SET]="All recommended MCP servers are already set up!"
+MESSAGES[SETUP_MCP_ENHANCE]="MCP servers enhance Claude Code with:"
+MESSAGES[SETUP_MCP_PLAYWRIGHT]="Playwright - Browser automation and visual testing"
+MESSAGES[SETUP_MCP_CONTEXT7]="Context7 - Up-to-date library documentation"
+MESSAGES[SETUP_MCP_INSTALL_MISSING]="Would you like to install the missing MCP servers? [Y/n]"
+MESSAGES[SETUP_MCP_INSTALLING]="Installing MCP servers..."
+MESSAGES[SETUP_MCP_SERVER_INSTALLING]="Installing %s MCP server..."
+MESSAGES[SETUP_MCP_CONFIGURED]="MCP servers configured!"
+MESSAGES[SETUP_MCP_AVAILABLE]="These servers are now available in all your projects"
+MESSAGES[SETUP_MCP_LIST_CMD]="Run 'claude mcp list' to see all configured servers"
+MESSAGES[SETUP_MCP_MANUAL_CMD]="Manual command: %s"
+MESSAGES[SETUP_MCP_PROJECT_LEVEL]="Alternative: Project-level configuration"
+MESSAGES[SETUP_MCP_COPY_HINT]="The %s file is available in claude-helpers/%s/"
+MESSAGES[SETUP_MCP_COPY_PROJECT]="Copy it to any project root for project-specific MCP servers"
+MESSAGES[SETUP_MCP_SKIPPED]="Skipping MCP server setup"
+
+MESSAGES[SETUP_CHECKING_TOOLS]="Checking optional tool enhancements..."
+MESSAGES[SETUP_TOOLS_ENHANCE]="Optional tools can enhance your experience!"
+MESSAGES[SETUP_TOOLS_FEATURES]="These tools enable advanced features like better search,"
+MESSAGES[SETUP_TOOLS_FEATURES2]="interactive selection, and syntax highlighting."
+MESSAGES[SETUP_TOOLS_INSTALL]="Would you like to install the missing tools? [Y/n]"
+MESSAGES[SETUP_TOOLS_SKIP]="Skipping optional tools."
+MESSAGES[SETUP_TOOLS_ALL_INSTALLED]="All optional tools are already installed!"
+MESSAGES[SETUP_INSTALLING_TOOLS]="Installing optional tools..."
+MESSAGES[SETUP_TOOLS_MANUAL]="Manual install needed"
+MESSAGES[SETUP_TOOLS_VISIT]="Visit: %s"
+MESSAGES[SETUP_TOOLS_CANNOT_AUTO]="Cannot auto-install"
+
+MESSAGES[SETUP_COMPLETE_TITLE]="Setup Complete!"
+MESSAGES[SETUP_QUICK_START]="Quick Start:"
+MESSAGES[SETUP_RELOAD_SHELL]="1. Reload your shell config:"
+MESSAGES[SETUP_TRY_HELPER]="2. Try the main helper:"
+MESSAGES[SETUP_CREATE_PROJECT]="3. In any project, create a CLAUDE.md file:"
+MESSAGES[SETUP_ENJOY]="Enjoy your enhanced Claude experience!"
+
+# Language selection
+MESSAGES[SETUP_LANG_TITLE]="Language / Idioma"
+MESSAGES[SETUP_LANG_ENGLISH]="English"
+MESSAGES[SETUP_LANG_SPANISH]="Espa\u00f1ol"
+MESSAGES[SETUP_LANG_SELECT]="Select [1]:"
+
+# =============================================================================
+# CLAUDE-HELPER.SH MESSAGES
+# =============================================================================
+
+MESSAGES[HELPER_TITLE]="=== CLAUDE HELPER SCRIPTS ==="
+MESSAGES[HELPER_USAGE]="Usage: %s <category> <command> [args]"
+MESSAGES[HELPER_CATEGORIES]="Categories:"
+MESSAGES[HELPER_CAT_PROJECT]="  project|p     - Project overview and analysis"
+MESSAGES[HELPER_CAT_DOCKER]="  docker|d      - Docker operations"
+MESSAGES[HELPER_CAT_SEARCH]="  search|s      - Code searching tools"
+MESSAGES[HELPER_CAT_TS]="  ts|node       - TypeScript/Node.js helpers"
+MESSAGES[HELPER_CAT_PYTHON]="  python|py     - Python development tools"
+MESSAGES[HELPER_CAT_GO]="  go|golang     - Go development tools"
+MESSAGES[HELPER_CAT_MULTI]="  multi|m       - Multi-file operations"
+MESSAGES[HELPER_CAT_ENV]="  env|e         - Environment checks"
+MESSAGES[HELPER_CAT_MCP]="  mcp           - MCP server helpers"
+MESSAGES[HELPER_CAT_NLP]="  nlp|text      - Text analysis & NLP operations"
+MESSAGES[HELPER_CAT_CONTEXT]="  context|ctx   - Claude context generation"
+MESSAGES[HELPER_CAT_CODE_REL]="  code-relationships|cr - Analyze code dependencies"
+MESSAGES[HELPER_CAT_CODE_QUAL]="  code-quality|cq - Check code quality"
+MESSAGES[HELPER_CAT_TEST]="  test|t        - Smart test operations"
+
+MESSAGES[HELPER_ENHANCED]="Enhanced Tools (optional):"
+MESSAGES[HELPER_CAT_INTERACTIVE]="  interactive|i - Interactive file/branch selection"
+MESSAGES[HELPER_CAT_API]="  api           - API testing with JSON tools"
+
+MESSAGES[HELPER_EXAMPLES]="Quick Examples:"
+MESSAGES[HELPER_EX_PROJECT]="  %s p                    # Project overview"
+MESSAGES[HELPER_EX_DOCKER]="  %s d ps                 # Docker containers"
+MESSAGES[HELPER_EX_SEARCH]="  %s s find-code pattern  # Search code"
+MESSAGES[HELPER_EX_TS]="  %s ts deps              # Show dependencies"
+MESSAGES[HELPER_EX_ENV]="  %s env tools            # Check dev tools"
+
+MESSAGES[HELPER_CATEGORY_HELP]="For help on specific category:"
+MESSAGES[HELPER_CATEGORY_HELP_CMD]="  %s <category> help"
+
+MESSAGES[HELPER_UNKNOWN_CATEGORY]="Unknown category: %s"
+
+# =============================================================================
+# PROJECT-INFO.SH MESSAGES
+# =============================================================================
+
+MESSAGES[PROJECT_TITLE]="PROJECT:"
+MESSAGES[PROJECT_MONOREPO]="MONOREPO:"
+MESSAGES[PROJECT_MONOREPO_LERNA]="Lerna monorepo detected"
+MESSAGES[PROJECT_MONOREPO_NX]="Nx monorepo detected"
+MESSAGES[PROJECT_MONOREPO_PNPM]="pnpm workspace detected"
+MESSAGES[PROJECT_MONOREPO_RUSH]="Rush monorepo detected"
+MESSAGES[PROJECT_MONOREPO_YARN]="Yarn/npm workspaces detected"
+MESSAGES[PROJECT_NOT_MONOREPO]="Not a monorepo"
+MESSAGES[PROJECT_WORKSPACES]="Workspaces:"
+
+MESSAGES[PROJECT_NESTED]="NESTED PROJECTS:"
+MESSAGES[PROJECT_NESTED_FOUND]="Found nested projects:"
+MESSAGES[PROJECT_NESTED_NONE]="No nested projects detected"
+
+MESSAGES[PROJECT_LANGUAGES]="LANGUAGES:"
+MESSAGES[PROJECT_LANG_NODE]="Node.js/JavaScript/TypeScript"
+MESSAGES[PROJECT_LANG_PYTHON]="Python"
+MESSAGES[PROJECT_LANG_GO]="Go"
+MESSAGES[PROJECT_LANG_RUST]="Rust"
+MESSAGES[PROJECT_LANG_RUBY]="Ruby"
+MESSAGES[PROJECT_LANG_JAVA]="Java/Kotlin"
+MESSAGES[PROJECT_LANG_SHELL]="Shell/Bash"
+MESSAGES[PROJECT_LANG_NONE]="No standard project files detected"
+MESSAGES[PROJECT_FILES_COUNT]="%s files: %s"
+MESSAGES[PROJECT_VERSION]="%s version: %s"
+
+MESSAGES[PROJECT_CONFIG]="CONFIG FILES:"
+MESSAGES[PROJECT_NODE]="NODE.JS:"
+MESSAGES[PROJECT_NAME]="Name: %s"
+MESSAGES[PROJECT_VERSION_LABEL]="Version: %s"
+MESSAGES[PROJECT_DESCRIPTION]="Description: %s"
+MESSAGES[PROJECT_FRAMEWORK]="Framework: %s"
+MESSAGES[PROJECT_SCRIPTS]="Scripts (%s): %s"
+MESSAGES[PROJECT_DEPENDENCIES]="Dependencies:"
+MESSAGES[PROJECT_DEPS_COUNT]="  Production: %s, Development: %s"
+MESSAGES[PROJECT_KEY_DEPS]="Key deps: %s"
+MESSAGES[PROJECT_BUILD_TOOLS]="Build tools:"
+
+MESSAGES[PROJECT_DOCKER]="DOCKER:"
+MESSAGES[PROJECT_DOCKERFILE]="Dockerfile present"
+MESSAGES[PROJECT_COMPOSE]="docker-compose.yml present"
+MESSAGES[PROJECT_SERVICES]="Services: %s"
+
+MESSAGES[PROJECT_STRUCTURE]="STRUCTURE:"
+MESSAGES[PROJECT_WORKSPACE_STRUCTURE]="Workspace structure:"
+
+MESSAGES[PROJECT_GIT]="GIT:"
+MESSAGES[PROJECT_BRANCH]="Current branch: %s"
+MESSAGES[PROJECT_REMOTE]="Remote: %s"
+MESSAGES[PROJECT_CHANGES]="Status: %s changes"
+
+MESSAGES[PROJECT_PYTHON_SECTION]="PYTHON:"
+MESSAGES[PROJECT_PKG_MANAGER]="Package Manager: %s"
+MESSAGES[PROJECT_PROJECT_NAME]="Project Name: %s"
+MESSAGES[PROJECT_TEST_FRAMEWORK]="Test Framework: %s"
+
+MESSAGES[PROJECT_GO_SECTION]="GO:"
+MESSAGES[PROJECT_MODULE]="Module: %s"
+MESSAGES[PROJECT_PACKAGES]="~%s packages"
+
+MESSAGES[PROJECT_RUST_SECTION]="RUST:"
+MESSAGES[PROJECT_PACKAGE]="Package: %s v%s"
+
+MESSAGES[PROJECT_TESTING]="TESTING/CI:"
+MESSAGES[PROJECT_GITHUB_ACTIONS]="GitHub Actions (%s workflows)"
+MESSAGES[PROJECT_GITLAB_CI]="GitLab CI"
+MESSAGES[PROJECT_CIRCLECI]="CircleCI"
+MESSAGES[PROJECT_JENKINS]="Jenkins"
+MESSAGES[PROJECT_TESTS_DIR]="tests/ directory"
+MESSAGES[PROJECT_NO_TESTS]="No test configuration detected"
+
+MESSAGES[PROJECT_DOCS]="DOCS:"
+MESSAGES[PROJECT_NO_DOCS]="No documentation files found"
+
+MESSAGES[PROJECT_METRICS]="METRICS:"
+MESSAGES[PROJECT_TOTAL_FILES]="Total files: %s"
+MESSAGES[PROJECT_TOTAL_SIZE]="Total size: %s"
+MESSAGES[PROJECT_LOC]="Lines of code:"
+MESSAGES[PROJECT_INSTALL_CLOC]="  (install 'cloc' for detailed code statistics)"
+
+MESSAGES[PROJECT_QUICK_START]="QUICK START:"
+MESSAGES[PROJECT_MONOREPO_TRY]="Monorepo detected (%s). Try:"
+MESSAGES[PROJECT_DETECTED]="detected. Try:"
+MESSAGES[PROJECT_MAKEFILE]="Makefile detected. Try:"
+
+MESSAGES[PROJECT_CONTEXT_HINT]="ch ctx for-task \"your task\" -> focused context"
+
+# =============================================================================
+# DOCKER-QUICK.SH MESSAGES
+# =============================================================================
+
+MESSAGES[DOCKER_RUNNING]="=== RUNNING CONTAINERS ==="
+MESSAGES[DOCKER_ALL]="=== ALL CONTAINERS ==="
+MESSAGES[DOCKER_IMAGES]="=== DOCKER IMAGES ==="
+MESSAGES[DOCKER_CONTAINER]="=== CONTAINER: %s ==="
+MESSAGES[DOCKER_CLEANUP]="=== DOCKER CLEANUP ==="
+MESSAGES[DOCKER_REMOVING_CONTAINERS]="Removing stopped containers..."
+MESSAGES[DOCKER_REMOVING_IMAGES]="Removing unused images..."
+MESSAGES[DOCKER_REMOVING_VOLUMES]="Removing unused volumes..."
+MESSAGES[DOCKER_CLEANUP_COMPLETE]="Cleanup complete!"
+MESSAGES[DOCKER_VOLUMES]="=== DOCKER VOLUMES ==="
+MESSAGES[DOCKER_VOLUME_USAGE]="=== VOLUME USAGE ==="
+MESSAGES[DOCKER_NETWORKS]="=== DOCKER NETWORKS ==="
+MESSAGES[DOCKER_BUILDING]="Building image with tag: %s"
+MESSAGES[DOCKER_HEALTH]="=== CONTAINER HEALTH STATUS ==="
+MESSAGES[DOCKER_PORTS_ALL]="=== ALL PORT MAPPINGS ==="
+MESSAGES[DOCKER_PORTS_FOR]="=== PORTS FOR: %s ==="
+MESSAGES[DOCKER_NO_COMPOSE]="No docker-compose.yml found in current directory"
+
+MESSAGES[DOCKER_USAGE_LOGS]="Usage: %s logs <container-name>"
+MESSAGES[DOCKER_USAGE_SHELL]="Usage: %s shell <container-name> [shell-command]"
+MESSAGES[DOCKER_USAGE_INSPECT]="Usage: %s inspect <container-name>"
+MESSAGES[DOCKER_USAGE_QUICK_RUN]="Usage: %s quick-run <image> [command]"
+
+MESSAGES[DOCKER_HELP_TITLE]="Docker Quick Commands:"
+MESSAGES[DOCKER_HELP_PS]="  %s ps|list          - Show running containers"
+MESSAGES[DOCKER_HELP_ALL]="  %s all              - Show all containers"
+MESSAGES[DOCKER_HELP_IMAGES]="  %s images           - List images"
+MESSAGES[DOCKER_HELP_LOGS]="  %s logs <name>      - Tail logs for container"
+MESSAGES[DOCKER_HELP_SHELL]="  %s shell <name>     - Get shell in container"
+MESSAGES[DOCKER_HELP_INSPECT]="  %s inspect <name>   - Inspect container (formatted)"
+MESSAGES[DOCKER_HELP_CLEAN]="  %s clean|cleanup    - Clean up Docker resources"
+MESSAGES[DOCKER_HELP_STATS]="  %s stats            - Show container stats"
+MESSAGES[DOCKER_HELP_COMPOSE_UP]="  %s compose-up       - Docker-compose up -d"
+MESSAGES[DOCKER_HELP_COMPOSE_DOWN]="  %s compose-down     - Docker-compose down"
+MESSAGES[DOCKER_HELP_COMPOSE_LOGS]="  %s compose-logs     - Docker-compose logs"
+MESSAGES[DOCKER_HELP_VOLUMES]="  %s volumes          - List volumes"
+MESSAGES[DOCKER_HELP_NETWORKS]="  %s networks         - List networks"
+MESSAGES[DOCKER_HELP_QUICK_RUN]="  %s quick-run <img>  - Quick run container"
+MESSAGES[DOCKER_HELP_BUILD]="  %s build [tag]      - Build Dockerfile in current dir"
+
+# =============================================================================
+# SEARCH-TOOLS.SH MESSAGES
+# =============================================================================
+
+MESSAGES[SEARCH_INTERACTIVE]="=== INTERACTIVE SEARCH: %s ==="
+MESSAGES[SEARCH_SEARCHING]="=== SEARCHING FOR: %s ==="
+MESSAGES[SEARCH_FILES_MATCHING]="=== FILES MATCHING: %s ==="
+MESSAGES[SEARCH_EXT_FILES]="=== .%s FILES ==="
+MESSAGES[SEARCH_IMPORTS]="=== IMPORTS OF: %s ==="
+MESSAGES[SEARCH_FUNCTION]="=== FUNCTION: %s ==="
+MESSAGES[SEARCH_CLASS]="=== CLASS: %s ==="
+MESSAGES[SEARCH_TODO]="=== TODO/FIXME COMMENTS ==="
+MESSAGES[SEARCH_LARGE_FILES]="=== FILES LARGER THAN %s ==="
+MESSAGES[SEARCH_RECENT]="=== FILES MODIFIED IN LAST %s DAY(S) ==="
+MESSAGES[SEARCH_FILE_LIST]="=== FILE LIST (top %s) ==="
+MESSAGES[SEARCH_INTERACTIVE_MODE]="=== INTERACTIVE FILE SEARCH (ESC to cancel) ==="
+MESSAGES[SEARCH_LOC]="=== LINES OF CODE BY TYPE ==="
+MESSAGES[SEARCH_COMPREHENSIVE]="=== COMPREHENSIVE SEARCH: %s ==="
+MESSAGES[SEARCH_FILES_CONTAIN]="Files containing pattern:"
+MESSAGES[SEARCH_FILENAMES]="File names matching:"
+MESSAGES[SEARCH_FIRST_MATCHES]="First few occurrences:"
+
+MESSAGES[SEARCH_USAGE_FIND_CODE]="Usage: %s find-code <pattern>"
+MESSAGES[SEARCH_USAGE_FIND_FILE]="Usage: %s find-file <pattern>"
+MESSAGES[SEARCH_USAGE_FIND_TYPE]="Common types: js ts tsx jsx py go rs rb java cpp h"
+MESSAGES[SEARCH_USAGE_FIND_TYPE2]="Usage: %s find-type <extension>"
+MESSAGES[SEARCH_USAGE_IMPORTS]="Usage: %s search-imports <module-name>"
+MESSAGES[SEARCH_USAGE_FUNCTION]="Usage: %s search-function <function-name>"
+MESSAGES[SEARCH_USAGE_CLASS]="Usage: %s search-class <class-name>"
+MESSAGES[SEARCH_USAGE_ALL]="Usage: %s search-all <pattern>"
+
+MESSAGES[SEARCH_HELP_TITLE]="Search Tools Commands:"
+MESSAGES[SEARCH_HELP_FIND_CODE]="  %s find-code|fc <pattern>      - Find code pattern"
+MESSAGES[SEARCH_HELP_FIND_FILE]="  %s find-file|ff <pattern>      - Find files by name"
+MESSAGES[SEARCH_HELP_FIND_TYPE]="  %s find-type|ft <ext>          - Find files by extension"
+MESSAGES[SEARCH_HELP_IMPORTS]="  %s search-imports|si <module>  - Search import statements"
+MESSAGES[SEARCH_HELP_FUNCTION]="  %s search-function|sf <name>   - Search function definitions"
+MESSAGES[SEARCH_HELP_CLASS]="  %s search-class|sc <name>      - Search class definitions"
+MESSAGES[SEARCH_HELP_TODO]="  %s todo-comments|todo          - Find TODO/FIXME comments"
+MESSAGES[SEARCH_HELP_LARGE]="  %s large-files|lf [size]       - Find large files"
+MESSAGES[SEARCH_HELP_RECENT]="  %s recent-files|rf [days]      - Find recently modified"
+MESSAGES[SEARCH_HELP_COUNT]="  %s count-lines|cl              - Count lines by file type"
+MESSAGES[SEARCH_HELP_ALL]="  %s search-all|sa <pattern>     - Comprehensive search"
+MESSAGES[SEARCH_HELP_INTERACTIVE]="  %s interactive|i               - Interactive file search (requires fzf)"
+MESSAGES[SEARCH_OPTIONAL_STATUS]="Optional tool status:"
+MESSAGES[SEARCH_INSTALL_OPTIONAL]="Install optional tools for enhanced features."
+
+# =============================================================================
+# INTERACTIVE-HELPER.SH MESSAGES
+# =============================================================================
+
+MESSAGES[INTERACTIVE_TITLE]="Interactive Claude Helper"
+MESSAGES[INTERACTIVE_USAGE]="Usage: %s <command> [options]"
+MESSAGES[INTERACTIVE_COMMANDS]="Commands:"
+MESSAGES[INTERACTIVE_CMD_SELECT_FILE]="  select-file        Interactive file selection"
+MESSAGES[INTERACTIVE_CMD_SELECT_FILES]="  select-files       Select multiple files"
+MESSAGES[INTERACTIVE_CMD_SELECT_SCRIPT]="  select-script      Choose and run npm/yarn script"
+MESSAGES[INTERACTIVE_CMD_SELECT_BRANCH]="  select-branch      Switch git branch interactively"
+MESSAGES[INTERACTIVE_CMD_SEARCH_EDIT]="  search-and-edit    Search for code and edit files"
+MESSAGES[INTERACTIVE_CMD_QUICK_COMMIT]="  quick-commit       Interactive commit with preview"
+MESSAGES[INTERACTIVE_CMD_HELP]="  help              Show this help message"
+MESSAGES[INTERACTIVE_TOOLS_STATUS]="Optional Tools Status:"
+MESSAGES[INTERACTIVE_SELECT_FILE]="Select a file:"
+MESSAGES[INTERACTIVE_SELECT_FILES]="Select files (tab to select multiple, enter when done)"
+MESSAGES[INTERACTIVE_SELECT_SCRIPT]="Select script to run"
+MESSAGES[INTERACTIVE_SELECT_BRANCH]="Select branch to switch to"
+MESSAGES[INTERACTIVE_NO_SCRIPTS]="No scripts found in package.json"
+MESSAGES[INTERACTIVE_RUNNING]="Running: npm run %s"
+MESSAGES[INTERACTIVE_AVAILABLE_SCRIPTS]="Available scripts:"
+MESSAGES[INTERACTIVE_AVAILABLE_BRANCHES]="Available branches:"
+MESSAGES[INTERACTIVE_ENTER_PATTERN]="Enter search pattern:"
+MESSAGES[INTERACTIVE_NO_PATTERN]="No pattern provided"
+MESSAGES[INTERACTIVE_NO_FILES_FOUND]="No files found containing '%s'"
+MESSAGES[INTERACTIVE_FILES_CONTAINING]="Files containing '%s':"
+MESSAGES[INTERACTIVE_SELECTED]="Selected: %s"
+MESSAGES[INTERACTIVE_CURRENT_CHANGES]="Current changes:"
+MESSAGES[INTERACTIVE_ENTER_COMMIT_MSG]="Enter commit message:"
+MESSAGES[INTERACTIVE_COMMIT_WITH]="Commit with message: %s"
+MESSAGES[INTERACTIVE_COMMIT_CANCELLED]="Commit cancelled (no message)"
+MESSAGES[INTERACTIVE_MULTI_REQUIRES_FZF]="Multi-file selection requires fzf"
+MESSAGES[INTERACTIVE_FALLBACK_SINGLE]="Falling back to single file selection..."
+
+# =============================================================================
+# TS-HELPER.SH MESSAGES
+# =============================================================================
+
+MESSAGES[TS_DEPS_TITLE]="=== DEPENDENCIES OVERVIEW ==="
+MESSAGES[TS_PROD_DEPS]="Production dependencies: %s"
+MESSAGES[TS_DEV_DEPS]="Dev dependencies: %s"
+MESSAGES[TS_PEER_DEPS]="Peer dependencies: %s"
+MESSAGES[TS_CHECKING_OUTDATED]="Checking for outdated packages..."
+MESSAGES[TS_ALL_UP_TO_DATE]="  All packages up to date"
+MESSAGES[TS_KEY_PROD_DEPS]="Key Production Dependencies:"
+MESSAGES[TS_SECURITY_AUDIT]="Security Audit:"
+MESSAGES[TS_NO_AUDIT_DATA]="  No audit data available"
+
+MESSAGES[TS_SCRIPTS_TITLE]="=== AVAILABLE SCRIPTS ==="
+MESSAGES[TS_SCRIPTS_BUILD]="Build & Development:"
+MESSAGES[TS_SCRIPTS_TEST]="Testing & Quality:"
+MESSAGES[TS_SCRIPTS_OTHER]="Other Scripts:"
+MESSAGES[TS_QUICK_COMMANDS]="Quick Commands:"
+
+MESSAGES[TS_USING_PNPM]="Using pnpm..."
+MESSAGES[TS_USING_YARN]="Using yarn..."
+MESSAGES[TS_USING_NPM]="Using npm..."
+MESSAGES[TS_USING_NPM_NO_LOCK]="Using npm (no lock file found)..."
+MESSAGES[TS_NO_BUILD_SCRIPT]="No build script found in package.json"
+MESSAGES[TS_NO_TEST_SCRIPT]="No test script found in package.json"
+MESSAGES[TS_NO_LINT_SCRIPT]="No lint script found in package.json"
+MESSAGES[TS_NO_TSCONFIG]="No tsconfig.json found"
+MESSAGES[TS_TSC_NOT_FOUND]="TypeScript compiler not found"
+
+MESSAGES[TS_OUTDATED_TITLE]="=== OUTDATED PACKAGES ==="
+MESSAGES[TS_AUDIT_TITLE]="=== SECURITY AUDIT ==="
+MESSAGES[TS_CLEAN_TITLE]="=== CLEANING PROJECT ==="
+MESSAGES[TS_CLEANED]="Cleaned: node_modules, dist, build, coverage, .next, out"
+MESSAGES[TS_SIZE_TITLE]="=== PACKAGE SIZES ==="
+MESSAGES[TS_LARGEST_DEPS]="=== LARGEST DEPENDENCIES ==="
+MESSAGES[TS_NO_DEV_START]="No dev or start script found"
+
+MESSAGES[TS_USAGE_QUICK_ADD]="Usage: %s quick-add <package-name>"
+
+MESSAGES[TS_ANALYZE_TITLE]="=== PROJECT STRUCTURE ANALYSIS ==="
+MESSAGES[TS_PROJECT_TYPE]="Project Type:"
+MESSAGES[TS_TYPE_NEXTJS]="  Next.js Application"
+MESSAGES[TS_TYPE_REACT]="  React Application"
+MESSAGES[TS_TYPE_EXPRESS]="  Express Server"
+MESSAGES[TS_TYPE_ESM]="  ES Module Project"
+MESSAGES[TS_TYPE_NODE]="  Node.js Project"
+MESSAGES[TS_CONFIGURATION]="Configuration:"
+MESSAGES[TS_TS_CONFIGURED]="  TypeScript configured"
+MESSAGES[TS_TARGET]="    Target: %s"
+MESSAGES[TS_ESLINT]="  ESLint configured"
+MESSAGES[TS_PRETTIER]="  Prettier configured"
+MESSAGES[TS_TESTING]="  Testing configured"
+MESSAGES[TS_SOURCE_STRUCTURE]="Source Structure:"
+MESSAGES[TS_MODULE_SYSTEM]="Module System:"
+MESSAGES[TS_USING_ESM]="  Using ES Modules (import/export)"
+MESSAGES[TS_USING_CJS]="  Using CommonJS (require/module.exports)"
+MESSAGES[TS_MONOREPO_STRUCTURE]="Monorepo Structure:"
+MESSAGES[TS_MONOREPO_DETECTED]="  Monorepo detected"
+
+MESSAGES[TS_HELP_TITLE]="TypeScript/Node.js Helper Commands:"
+MESSAGES[TS_HELP_DEPS]="  %s deps|dependencies    - Show dependencies overview"
+MESSAGES[TS_HELP_SCRIPTS]="  %s scripts              - List available npm scripts"
+MESSAGES[TS_HELP_QI]="  %s quick-install|qi     - Install with detected package manager"
+MESSAGES[TS_HELP_BUILD]="  %s build                - Run build script"
+MESSAGES[TS_HELP_TEST]="  %s test                 - Run tests"
+MESSAGES[TS_HELP_LINT]="  %s lint                 - Run linter"
+MESSAGES[TS_HELP_TC]="  %s typecheck|tc         - Run TypeScript type check"
+MESSAGES[TS_HELP_OUTDATED]="  %s outdated             - Check outdated packages"
+MESSAGES[TS_HELP_AUDIT]="  %s audit                - Security audit"
+MESSAGES[TS_HELP_CLEAN]="  %s clean                - Clean build artifacts"
+MESSAGES[TS_HELP_SIZE]="  %s size                 - Check package sizes"
+MESSAGES[TS_HELP_DEV]="  %s dev                  - Run dev server"
+MESSAGES[TS_HELP_QA]="  %s quick-add|qa <pkg>   - Quick add package"
+
+# =============================================================================
+# ENV-CHECK.SH MESSAGES
+# =============================================================================
+
+MESSAGES[ENV_TOOLS_TITLE]="=== DEVELOPMENT TOOLS CHECK ==="
+MESSAGES[ENV_ESSENTIAL]="Essential Tools:"
+MESSAGES[ENV_DEV_TOOLS]="Development Tools:"
+MESSAGES[ENV_OPTIONAL]="Optional Enhancement Tools:"
+MESSAGES[ENV_INSTALL_HINT]="To install missing optional tools, run:"
+MESSAGES[ENV_INSTALL_INDIVIDUAL]="Or install individually:"
+MESSAGES[ENV_USE_PKG_MANAGER]="Use your package manager to install: %s"
+
+MESSAGES[ENV_NODE_TITLE]="=== NODE.JS ENVIRONMENT ==="
+MESSAGES[ENV_NODE_VERSION]="Node: %s"
+MESSAGES[ENV_NPM_VERSION]="NPM: %s"
+MESSAGES[ENV_NOT_INSTALLED]="not installed"
+MESSAGES[ENV_GLOBAL_PACKAGES]="Global packages:"
+
+MESSAGES[ENV_PYTHON_TITLE]="=== PYTHON ENVIRONMENT ==="
+MESSAGES[ENV_PYTHON_VERSION]="Python: %s"
+MESSAGES[ENV_PIP_VERSION]="Pip: %s"
+MESSAGES[ENV_VENV_ACTIVE]="Virtual env: %s"
+MESSAGES[ENV_NO_VENV]="No virtual environment active"
+MESSAGES[ENV_INSTALLED_PACKAGES]="Installed packages:"
+MESSAGES[ENV_NOT_INSTALLED_LANG]="%s not installed"
+
+MESSAGES[ENV_DOCKER_TITLE]="=== DOCKER ENVIRONMENT ==="
+MESSAGES[ENV_DOCKER_NOT_RUNNING]="Docker daemon not running"
+MESSAGES[ENV_CONTAINERS_RUNNING]="Containers running: %s"
+MESSAGES[ENV_IMAGES_AVAILABLE]="Images available: %s"
+
+MESSAGES[ENV_GIT_TITLE]="=== GIT CONFIGURATION ==="
+MESSAGES[ENV_GIT_VERSION]="Git: %s"
+MESSAGES[ENV_USER_CONFIG]="User config:"
+MESSAGES[ENV_GIT_NAME]="  Name: %s"
+MESSAGES[ENV_GIT_EMAIL]="  Email: %s"
+MESSAGES[ENV_NOT_SET]="not set"
+MESSAGES[ENV_GIT_ALIASES]="Global aliases:"
+
+MESSAGES[ENV_PORTS_TITLE]="=== COMMON PORTS STATUS ==="
+MESSAGES[ENV_PORT_USED]="Port %s (%s) - Used by: %s"
+MESSAGES[ENV_PORT_FREE]="  Port %s (%s) - Free"
+
+MESSAGES[ENV_VARS_TITLE]="=== ENVIRONMENT VARIABLES ==="
+MESSAGES[ENV_PATH_ENTRIES]="PATH entries:"
+MESSAGES[ENV_KEY_VARS]="Key variables:"
+MESSAGES[ENV_FILE_FOUND]=".env file found with %s variables"
+
+MESSAGES[ENV_SYSTEM_TITLE]="=== SYSTEM INFO ==="
+MESSAGES[ENV_OS]="OS: %s"
+MESSAGES[ENV_KERNEL]="Kernel: %s"
+MESSAGES[ENV_ARCH]="Architecture: %s"
+MESSAGES[ENV_HOSTNAME]="Hostname: %s"
+MESSAGES[ENV_MEMORY]="Memory:"
+MESSAGES[ENV_DISK]="Disk usage:"
+
+MESSAGES[ENV_PROJECT_TITLE]="=== PROJECT REQUIREMENTS CHECK ==="
+MESSAGES[ENV_CONFIG_FILES]="Configuration files:"
+MESSAGES[ENV_CICD]="CI/CD:"
+
+MESSAGES[ENV_HELP_TITLE]="Environment Check Commands:"
+MESSAGES[ENV_HELP_TOOLS]="  %s [tools]     - Check common dev tools"
+MESSAGES[ENV_HELP_NODE]="  %s node        - Node.js environment"
+MESSAGES[ENV_HELP_PYTHON]="  %s python      - Python environment"
+MESSAGES[ENV_HELP_DOCKER]="  %s docker      - Docker environment"
+MESSAGES[ENV_HELP_GIT]="  %s git         - Git configuration"
+MESSAGES[ENV_HELP_PORTS]="  %s ports       - Common ports status"
+MESSAGES[ENV_HELP_ENV]="  %s env         - Environment variables"
+MESSAGES[ENV_HELP_SYSTEM]="  %s system      - System information"
+MESSAGES[ENV_HELP_PROJECT]="  %s project     - Project requirements"
+
+# =============================================================================
+# TOOL DESCRIPTIONS
+# =============================================================================
+
+MESSAGES[TOOL_FZF]="Interactive fuzzy finder"
+MESSAGES[TOOL_JQ]="JSON processor"
+MESSAGES[TOOL_BAT]="Syntax-highlighted cat"
+MESSAGES[TOOL_RIPGREP]="Fast file search (rg)"
+MESSAGES[TOOL_GUM]="Beautiful CLI prompts"
+MESSAGES[TOOL_DELTA]="Enhanced git diffs"
+MESSAGES[TOOL_HTTPIE]="Modern HTTP client"
+MESSAGES[TOOL_TOKEI]="Code statistics"
+MESSAGES[TOOL_AST_GREP]="Semantic code search"
+
+MESSAGES[TOOL_GIT]="Version control"
+MESSAGES[TOOL_BASH]="Shell scripting"
+MESSAGES[TOOL_GREP]="Text search"
+MESSAGES[TOOL_SED]="Stream editor"
+MESSAGES[TOOL_AWK]="Text processing"
+MESSAGES[TOOL_FIND]="File search"
+MESSAGES[TOOL_CURL]="HTTP client"
+
+MESSAGES[TOOL_NODE]="Node.js runtime"
+MESSAGES[TOOL_NPM]="Node package manager"
+MESSAGES[TOOL_PYTHON3]="Python 3"
+MESSAGES[TOOL_DOCKER]="Container runtime"
+MESSAGES[TOOL_MAKE]="Build automation"
+MESSAGES[TOOL_GH]="GitHub CLI"
+MESSAGES[TOOL_CODE]="VS Code"

@@ -16,10 +16,19 @@ CLAUDE_MD_FILE="CLAUDE.md"
 CLAUDE_PROJECT_MD_FILE="CLAUDE_PROJECT.md"
 CONFIG_DIR="config"
 MCP_CONFIG_FILE="mcp.json"
+LOCALES_DIR="locales"
 
 # Disable strict mode for this script to handle errors gracefully
 set +u
 set +e
+
+# Default language
+CLAUDE_LANG="${CLAUDE_LANG:-en}"
+
+# Load saved language preference if exists
+if [[ -f "$CLAUDE_DIR/config/locale" ]]; then
+    source "$CLAUDE_DIR/config/locale"
+fi
 
 echo -e "${BLUE}🚀 Claude Helpers Setup${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -34,12 +43,16 @@ for arg in "$@"; do
             SKIP_PROMPTS=true
             AUTO_INSTALL=true
             ;;
+        --lang=*)
+            CLAUDE_LANG="${arg#*=}"
+            ;;
         --help|-h)
             echo "Usage: ./setup.sh [options]"
             echo ""
             echo "Options:"
-            echo "  --yes, -y     Auto-confirm all prompts (install everything)"
-            echo "  --help, -h    Show this help message"
+            echo "  --yes, -y       Auto-confirm all prompts (install everything)"
+            echo "  --lang=LANG     Set language (en, es)"
+            echo "  --help, -h      Show this help message"
             echo ""
             echo "Just run ./setup.sh without options for interactive setup!"
             exit 0
@@ -117,7 +130,7 @@ install_homebrew() {
         echo -e "${YELLOW}Homebrew is not installed on your Mac.${NC}"
         echo "Homebrew is recommended for installing optional tools."
         echo ""
-        
+
         if [ "$SKIP_PROMPTS" = true ]; then
             response="y"
         else
@@ -125,7 +138,7 @@ install_homebrew() {
             read -r response
             response=${response:-y}
         fi
-        
+
         if [[ "$response" =~ ^[Yy]$ ]]; then
             echo -e "${YELLOW}📥 Installing Homebrew...${NC}"
             if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
@@ -144,6 +157,44 @@ install_homebrew() {
         fi
         echo ""
     fi
+}
+
+# Select language for installation
+select_language() {
+    echo -e "${BLUE}🌍 Language / Idioma${NC}"
+    echo ""
+
+    if [ "$SKIP_PROMPTS" = true ]; then
+        # Use existing CLAUDE_LANG or default to English
+        CLAUDE_LANG="${CLAUDE_LANG:-en}"
+        echo "Using language: $CLAUDE_LANG"
+    else
+        echo "1) English"
+        echo "2) Español"
+        echo ""
+        echo -n "Select / Selecciona [1]: "
+        read -r choice
+
+        case "$choice" in
+            2|es|ES|spanish|Spanish|español|Español)
+                CLAUDE_LANG="es"
+                ;;
+            *)
+                CLAUDE_LANG="en"
+                ;;
+        esac
+    fi
+
+    # Save language preference
+    mkdir -p "$CLAUDE_DIR/config"
+    echo "CLAUDE_LANG=$CLAUDE_LANG" > "$CLAUDE_DIR/config/locale"
+
+    if [ "$CLAUDE_LANG" = "es" ]; then
+        echo -e "${GREEN}✅ Idioma seleccionado: Español${NC}"
+    else
+        echo -e "${GREEN}✅ Language selected: English${NC}"
+    fi
+    echo ""
 }
 
 # Check if we need sudo for package installation
@@ -166,17 +217,18 @@ check_sudo() {
 # Install core scripts
 install_core_scripts() {
     echo -e "${BLUE}📂 Installing core scripts...${NC}"
-    
+
     # Validate CLAUDE_HELPERS_DIR
     if [ -z "$CLAUDE_HELPERS_DIR" ] || [ ! -d "$CLAUDE_HELPERS_DIR" ]; then
         echo -e "${RED}❌ Error: CLAUDE_HELPERS_DIR is not set or doesn't exist${NC}"
         return 1
     fi
-    
+
     # Create directories
     mkdir -p "$SCRIPTS_INSTALL_DIR"
     mkdir -p "$COMMANDS_INSTALL_DIR"
-    
+    mkdir -p "$CLAUDE_DIR/locales"
+
     # Copy scripts
     if cp -f "$CLAUDE_HELPERS_DIR/scripts/"*.sh "$SCRIPTS_INSTALL_DIR/" 2>/dev/null; then
         chmod +x "$SCRIPTS_INSTALL_DIR/"*.sh
@@ -185,15 +237,41 @@ install_core_scripts() {
         echo -e "${RED}❌ Failed to copy scripts${NC}"
         return 1
     fi
-    
-    # Copy commands
-    if cp -f "$CLAUDE_HELPERS_DIR/commands/"*.md "$COMMANDS_INSTALL_DIR/" 2>/dev/null; then
-        echo -e "${GREEN}✅ Commands installed to $COMMANDS_INSTALL_DIR${NC}"
-    else
-        echo -e "${RED}❌ Failed to copy commands${NC}"
-        return 1
+
+    # Copy locales
+    if [ -d "$CLAUDE_HELPERS_DIR/$LOCALES_DIR" ]; then
+        if cp -f "$CLAUDE_HELPERS_DIR/$LOCALES_DIR/"*.sh "$CLAUDE_DIR/locales/" 2>/dev/null; then
+            echo -e "${GREEN}✅ Locales installed to $CLAUDE_DIR/locales${NC}"
+        else
+            echo -e "${YELLOW}⚠️  No locale files found${NC}"
+        fi
     fi
-    
+
+    # Copy commands based on selected language
+    local commands_source="$CLAUDE_HELPERS_DIR/commands"
+    if [ "$CLAUDE_LANG" != "en" ] && [ -d "$commands_source/$CLAUDE_LANG" ]; then
+        # Copy translated commands
+        if cp -f "$commands_source/$CLAUDE_LANG/"*.md "$COMMANDS_INSTALL_DIR/" 2>/dev/null; then
+            echo -e "${GREEN}✅ Commands (${CLAUDE_LANG}) installed to $COMMANDS_INSTALL_DIR${NC}"
+        else
+            # Fallback to English commands
+            if cp -f "$commands_source/"*.md "$COMMANDS_INSTALL_DIR/" 2>/dev/null; then
+                echo -e "${YELLOW}⚠️  Using English commands (no ${CLAUDE_LANG} translation found)${NC}"
+            else
+                echo -e "${RED}❌ Failed to copy commands${NC}"
+                return 1
+            fi
+        fi
+    else
+        # Copy English commands (default)
+        if cp -f "$commands_source/"*.md "$COMMANDS_INSTALL_DIR/" 2>/dev/null; then
+            echo -e "${GREEN}✅ Commands installed to $COMMANDS_INSTALL_DIR${NC}"
+        else
+            echo -e "${RED}❌ Failed to copy commands${NC}"
+            return 1
+        fi
+    fi
+
     echo ""
     return 0
 }
@@ -276,13 +354,35 @@ setup_shell_aliases() {
     
     echo -e "${GREEN}✅ Added aliases to $shell_rc${NC}"
     
-    # Create template
+    # Create template (use localized version if available)
     local template_path="$CLAUDE_DIR/$CLAUDE_PROJECT_MD_FILE"
-    if [ -n "$CLAUDE_HELPERS_DIR" ] && [ -f "$CLAUDE_HELPERS_DIR/$CONFIG_DIR/$CLAUDE_PROJECT_MD_FILE" ] && cp "$CLAUDE_HELPERS_DIR/$CONFIG_DIR/$CLAUDE_PROJECT_MD_FILE" "$template_path" 2>/dev/null; then
+    local source_config="$CLAUDE_PROJECT_MD_FILE"
+
+    # Use Spanish config if language is set to Spanish
+    if [[ "$CLAUDE_LANG" == "es" ]] && [[ -f "$CLAUDE_HELPERS_DIR/$CONFIG_DIR/CLAUDE_PROJECT.es.md" ]]; then
+        source_config="CLAUDE_PROJECT.es.md"
+    fi
+
+    if [ -n "$CLAUDE_HELPERS_DIR" ] && [ -f "$CLAUDE_HELPERS_DIR/$CONFIG_DIR/$source_config" ] && cp "$CLAUDE_HELPERS_DIR/$CONFIG_DIR/$source_config" "$template_path" 2>/dev/null; then
         echo -e "${GREEN}✅ Created template at $template_path${NC}"
     else
         # Create a basic template if copy fails
-        cat > "$template_path" << 'EOF'
+        if [[ "$CLAUDE_LANG" == "es" ]]; then
+            cat > "$template_path" << 'EOF'
+# Instrucciones de Claude Específicas del Proyecto
+
+## Scripts de Ayuda Disponibles
+Tienes acceso a scripts de ayuda via estos alias:
+- ch  - Menú principal de ayuda
+- chp - Vista general del proyecto
+- chs - Herramientas de búsqueda
+- chg - Operaciones Git
+
+## Notas del Proyecto
+[Agrega instrucciones específicas del proyecto aquí]
+EOF
+        else
+            cat > "$template_path" << 'EOF'
 # Project-Specific Claude Instructions
 
 ## Helper Scripts Available
@@ -295,6 +395,7 @@ You have access to helper scripts via these aliases:
 ## Project Notes
 [Add project-specific instructions here]
 EOF
+        fi
         echo -e "${GREEN}✅ Created template at $template_path${NC}"
     fi
     
@@ -481,15 +582,62 @@ install_optional_tools() {
 setup_global_claude_md() {
     local claude_md="$CLAUDE_DIR/$CLAUDE_MD_FILE"
     local temp_file="$CLAUDE_DIR/$CLAUDE_MD_FILE.tmp.$$"
-    
+
     echo -e "${BLUE}📝 Setting up global CLAUDE.md...${NC}"
-    
-    # Define the content for each section
-    local aliases_content="ch   → Main helper: ch [category] [command]
+
+    # Try to use pre-built config template based on language
+    local user_config_source=""
+    if [[ "$CLAUDE_LANG" == "es" ]] && [[ -f "$CLAUDE_HELPERS_DIR/$CONFIG_DIR/CLAUDE_USER.es.md" ]]; then
+        user_config_source="$CLAUDE_HELPERS_DIR/$CONFIG_DIR/CLAUDE_USER.es.md"
+    elif [[ -f "$CLAUDE_HELPERS_DIR/$CONFIG_DIR/CLAUDE_USER.md" ]]; then
+        user_config_source="$CLAUDE_HELPERS_DIR/$CONFIG_DIR/CLAUDE_USER.md"
+    fi
+
+    # If we have a source config and no existing CLAUDE.md, use the template
+    if [[ -n "$user_config_source" ]] && [[ ! -f "$claude_md" ]]; then
+        if cp "$user_config_source" "$claude_md" 2>/dev/null; then
+            echo -e "${GREEN}✅ Created global CLAUDE.md at $claude_md${NC}"
+            return 0
+        fi
+    fi
+
+    # Define the content for each section (localized)
+    local aliases_content key_commands_content
+
+    if [[ "$CLAUDE_LANG" == "es" ]]; then
+        aliases_content="ch   → Helper principal: ch [categoría] [comando]
+chp  → Vista del proyecto (ejecutar primero en proyectos nuevos)
+chs  → Herramientas de búsqueda: find-code, find-file, search-imports
+chg  → Ops Git: quick-commit, pr-ready, diff"
+
+        key_commands_content="# Comenzar con vista del proyecto
+chp
+
+# Usar helpers, no comandos crudos
+chs find-code \"patrón\"       # no grep
+ch m read-many a1 a2 a3      # no múltiples cats
+chg quick-commit \"msg\"       # no git add && commit
+ch i select-file             # selector interactivo
+ch ctx for-task \"desc\"       # generar contexto enfocado
+ch api test /endpoint        # probar APIs"
+    else
+        aliases_content="ch   → Main helper: ch [category] [command]
 chp  → Project overview (run first in new projects)
 chs  → Search tools: find-code, find-file, search-imports
 chg  → Git ops: quick-commit, pr-ready, diff"
-    
+
+        key_commands_content="# Start with project overview
+chp
+
+# Use helpers not raw commands
+chs find-code \"pattern\"      # not grep
+ch m read-many f1 f2 f3      # not multiple cats
+chg quick-commit \"msg\"       # not git add && commit
+ch i select-file             # interactive file picker
+ch ctx for-task \"desc\"       # generate focused context
+ch api test /endpoint        # test APIs"
+    fi
+
     local categories_content="project|p         → Project analysis
 docker|d          → Container ops: ps, logs, shell, inspect
 git|g             → Git workflows
@@ -502,25 +650,14 @@ interactive|i     → Interactive tools (needs: fzf, gum)
 context|ctx       → Context generation
 code-relationships|cr → Dependency analysis
 code-quality|cq   → Quality checks"
-    
-    local key_commands_content="# Start with project overview
-chp
 
-# Use helpers not raw commands
-chs find-code \"pattern\"      # not grep
-ch m read-many f1 f2 f3      # not multiple cats
-chg quick-commit \"msg\"       # not git add && commit
-ch i select-file             # interactive file picker
-ch ctx for-task \"desc\"       # generate focused context
-ch api test /endpoint        # test APIs"
-    
     local required_tools_content="ripgrep → search-tools.sh
 jq      → project-info.sh, ts-helper.sh, api-helper.sh
 fzf     → interactive selections
 bat     → syntax highlighting
 gum     → interactive prompts
 delta   → enhanced diffs"
-    
+
     local paths_content="Scripts: ~/$(basename "$CLAUDE_DIR")/scripts/
 Commands: ~/$(basename "$CLAUDE_DIR")/commands/"
     
@@ -766,13 +903,16 @@ setup_mcp_servers() {
 main() {
     # Step 1: Detect platform
     detect_platform
-    
-    # Step 2: Install Homebrew on macOS if needed
+
+    # Step 2: Select language
+    select_language
+
+    # Step 3: Install Homebrew on macOS if needed
     if [[ "$OS" == "macOS" ]]; then
         install_homebrew
     fi
-    
-    # Step 3: Install core scripts
+
+    # Step 4: Install core scripts
     if ! install_core_scripts; then
         echo -e "${RED}❌ Failed to install core scripts${NC}"
         exit 1
